@@ -44,7 +44,7 @@ export default function Home() {
         <div className="mt-10 text-sm text-gray-500">
           © 2026 Le Foin®
           <br />
-          Building scientific digital infrastructure.
+          Research Meets Entertainment
         </div>
       </div>
     </main>
