@@ -1,5 +1,6 @@
 
 import { walletRepository } from "@/repositories/wallet.repository";
+import { withTransaction } from "@/lib/transaction";
 
 export class WalletService {
   async getWallet(userId: string) {
@@ -26,24 +27,44 @@ export class WalletService {
     amount: number,
     reason = "Credit"
   ) {
-    const wallet = await this.getWallet(userId);
+    return withTransaction(async (tx) => {
+      let wallet =
+        await walletRepository.findByUserId(
+          userId,
+          tx
+        );
 
-    const newBalance = wallet.balance + amount;
+      if (!wallet) {
+        wallet =
+          await walletRepository.create(
+            userId,
+            tx
+          );
+      }
 
-    const updatedWallet =
-      await walletRepository.updateBalance(
-        userId,
-        newBalance
+      const newBalance =
+        wallet.balance + amount;
+
+      const updatedWallet =
+        await walletRepository.updateBalance(
+          userId,
+          newBalance,
+          tx
+        );
+
+      await walletRepository.createTransaction(
+        wallet.id,
+        amount,
+        "CREDIT",
+        reason,
+        tx
       );
 
-    await walletRepository.createTransaction(
-      wallet.id,
-      amount,
-      "CREDIT",
-      reason
-    );
-
-    return updatedWallet;
+      return {
+        userId: updatedWallet.userId,
+        balance: updatedWallet.balance,
+      };
+    });
   }
 
   async debit(
@@ -51,28 +72,50 @@ export class WalletService {
     amount: number,
     reason = "Debit"
   ) {
-    const wallet = await this.getWallet(userId);
+    return withTransaction(async (tx) => {
+      let wallet =
+        await walletRepository.findByUserId(
+          userId,
+          tx
+        );
 
-    if (wallet.balance < amount) {
-      throw new Error("Insufficient balance");
-    }
+      if (!wallet) {
+        wallet =
+          await walletRepository.create(
+            userId,
+            tx
+          );
+      }
 
-    const newBalance = wallet.balance - amount;
+      if (wallet.balance < amount) {
+        throw new Error(
+          "Insufficient balance"
+        );
+      }
 
-    const updatedWallet =
-      await walletRepository.updateBalance(
-        userId,
-        newBalance
+      const newBalance =
+        wallet.balance - amount;
+
+      const updatedWallet =
+        await walletRepository.updateBalance(
+          userId,
+          newBalance,
+          tx
+        );
+
+      await walletRepository.createTransaction(
+        wallet.id,
+        -amount,
+        "DEBIT",
+        reason,
+        tx
       );
 
-    await walletRepository.createTransaction(
-      wallet.id,
-      -amount,
-      "DEBIT",
-      reason
-    );
-
-    return updatedWallet;
+      return {
+        userId: updatedWallet.userId,
+        balance: updatedWallet.balance,
+      };
+    });
   }
 
   async getTransactions(userId: string) {

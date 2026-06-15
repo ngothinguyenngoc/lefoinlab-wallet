@@ -35,9 +35,10 @@ export default function Home() {
           </h3>
 
           <ul className="space-y-2">
-            <li>✅ /api/register</li>
-            <li>✅ /api/login</li>
-            <li>✅ /api/me</li>
+            <li>✅ /api/balance</li>
+            <li>✅ /api/credit</li>
+            <li>✅ /api/debit</li>
+          
           </ul>
         </div>
 
