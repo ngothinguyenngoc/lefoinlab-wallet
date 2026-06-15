@@ -1,20 +1,25 @@
 
-import { walletRepository } from "@/repositories/wallet.repository";
+import { TransactionType } from "@prisma/client";
+
 import { withTransaction } from "@/lib/transaction";
+import { walletRepository } from "@/repositories/wallet.repository";
 
 export class WalletService {
   async getWallet(userId: string) {
-    let wallet = await walletRepository.findByUserId(userId);
+    let wallet =
+      await walletRepository.findByUserId(userId);
 
     if (!wallet) {
-      wallet = await walletRepository.create(userId);
+      wallet =
+        await walletRepository.create(userId);
     }
 
     return wallet;
   }
 
   async getBalance(userId: string) {
-    const wallet = await this.getWallet(userId);
+    const wallet =
+      await this.getWallet(userId);
 
     return {
       userId: wallet.userId,
@@ -55,7 +60,7 @@ export class WalletService {
       await walletRepository.createTransaction(
         wallet.id,
         amount,
-        "CREDIT",
+        TransactionType.CREDIT,
         reason,
         tx
       );
@@ -106,7 +111,7 @@ export class WalletService {
       await walletRepository.createTransaction(
         wallet.id,
         -amount,
-        "DEBIT",
+        TransactionType.DEBIT,
         reason,
         tx
       );
@@ -119,7 +124,8 @@ export class WalletService {
   }
 
   async getTransactions(userId: string) {
-    const wallet = await this.getWallet(userId);
+    const wallet =
+      await this.getWallet(userId);
 
     return walletRepository.getTransactions(
       wallet.id

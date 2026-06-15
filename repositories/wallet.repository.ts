@@ -1,5 +1,9 @@
 
-import { PrismaClient, Prisma } from "@prisma/client";
+import {
+  PrismaClient,
+  Prisma,
+  TransactionType,
+} from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 type DBClient = PrismaClient | Prisma.TransactionClient;
@@ -43,12 +47,12 @@ export class WalletRepository {
   }
 
   async createTransaction(
-    walletId: string,
-    amount: number,
-    type: string,
-    reason?: string,
-    db: DBClient = prisma
-  ) {
+  walletId: string,
+  amount: number,
+  type: TransactionType,
+  reason?: string,
+  db: DBClient = prisma
+){
     return db.transaction.create({
       data: {
         walletId,
