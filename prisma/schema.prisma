@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,35 +8,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  passwordHash  String
-  status        String   @default("ACTIVE")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+model Wallet {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  balance   Int      @default(0)
 
-  profile        Profile?
-  sessions       Session[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transactions Transaction[]
 }
 
-model Profile {
-  id            String   @id @default(uuid())
-  displayName   String
-  avatar        String?
-  bio           String?
+model Transaction {
+  id        String   @id @default(cuid())
 
-  userId        String   @unique
-  user          User     @relation(fields: [userId], references: [id])
+  walletId  String
+  amount    Int
+
+  type      String
+  reason    String?
+
+  createdAt DateTime @default(now())
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
 }
 
-model Session {
-  id            String   @id @default(uuid())
-  token         String
-  device        String?
-  ip            String?
-  expiresAt     DateTime
-
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-}

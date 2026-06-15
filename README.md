@@ -1,8 +1,6 @@
-# Le Foin® Identity Platform
+# Le Foin® Wallet Platform
 
-Secure Authentication Infrastructure for the Le Foin Ecosystem.
-
----
+Digital Asset Infrastructure for the Le Foin Ecosystem.
 
 ## Overview
 
