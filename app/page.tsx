@@ -7,7 +7,7 @@ export default function Home() {
         </h1>
 
         <h2 className="text-3xl font-semibold mt-4">
-          Identity Platform
+          Wallet Platform
         </h2>
 
         <p className="mt-6 text-lg text-gray-600">
@@ -31,7 +31,7 @@ export default function Home() {
 
         <div className="mt-10 text-left border rounded-2xl p-6">
           <h3 className="text-xl font-semibold mb-4">
-            Available APIs
+           Services wallet
           </h3>
 
           <ul className="space-y-2">
