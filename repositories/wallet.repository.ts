@@ -47,12 +47,12 @@ export class WalletRepository {
   }
 
   async createTransaction(
-  walletId: string,
-  amount: number,
-  type: TransactionType,
-  reason?: string,
-  db: DBClient = prisma
-){
+    walletId: string,
+    amount: number,
+    type: TransactionType,
+    reason?: string,
+    db: DBClient = prisma
+  ) {
     return db.transaction.create({
       data: {
         walletId,
