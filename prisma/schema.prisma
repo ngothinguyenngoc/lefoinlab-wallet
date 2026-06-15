@@ -8,6 +8,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum TransactionType {
+  CREDIT
+  DEBIT
+}
+
 model Wallet {
   id        String   @id @default(cuid())
   userId    String   @unique
@@ -17,19 +22,27 @@ model Wallet {
   updatedAt DateTime @updatedAt
 
   transactions Transaction[]
+
+  @@index([userId])
 }
 
 model Transaction {
-  id        String   @id @default(cuid())
+  id        String          @id @default(cuid())
 
   walletId  String
   amount    Int
 
-  type      String
+  type      TransactionType
   reason    String?
 
-  createdAt DateTime @default(now())
+  createdAt DateTime        @default(now())
 
-  wallet Wallet @relation(fields: [walletId], references: [id])
+  wallet Wallet @relation(
+    fields: [walletId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@index([walletId])
+  @@index([createdAt])
 }
-

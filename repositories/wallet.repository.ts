@@ -1,25 +1,38 @@
 
+import { PrismaClient, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
+type DBClient = PrismaClient | Prisma.TransactionClient;
+
 export class WalletRepository {
-  async findByUserId(userId: string) {
-    return prisma.wallet.findUnique({
+  async findByUserId(
+    userId: string,
+    db: DBClient = prisma
+  ) {
+    return db.wallet.findUnique({
       where: {
         userId,
       },
     });
   }
 
-  async create(userId: string) {
-    return prisma.wallet.create({
+  async create(
+    userId: string,
+    db: DBClient = prisma
+  ) {
+    return db.wallet.create({
       data: {
         userId,
       },
     });
   }
 
-  async updateBalance(userId: string, balance: number) {
-    return prisma.wallet.update({
+  async updateBalance(
+    userId: string,
+    balance: number,
+    db: DBClient = prisma
+  ) {
+    return db.wallet.update({
       where: {
         userId,
       },
@@ -33,9 +46,10 @@ export class WalletRepository {
     walletId: string,
     amount: number,
     type: string,
-    reason?: string
+    reason?: string,
+    db: DBClient = prisma
   ) {
-    return prisma.transaction.create({
+    return db.transaction.create({
       data: {
         walletId,
         amount,
@@ -45,8 +59,11 @@ export class WalletRepository {
     });
   }
 
-  async getTransactions(walletId: string) {
-    return prisma.transaction.findMany({
+  async getTransactions(
+    walletId: string,
+    db: DBClient = prisma
+  ) {
+    return db.transaction.findMany({
       where: {
         walletId,
       },

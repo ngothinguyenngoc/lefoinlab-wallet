@@ -1,47 +1,51 @@
 
-export type TransactionType = "CREDIT" | "DEBIT";
+import { NextResponse } from "next/server";
 
-export interface Wallet {
-  id: string;
-  userId: string;
-  balance: number;
-
-  createdAt: Date;
-  updatedAt: Date;
+export function success(
+  data: unknown = null,
+  message = "OK",
+  status = 200
+) {
+  return NextResponse.json(
+    {
+      success: true,
+      message,
+      data,
+    },
+    {
+      status,
+    }
+  );
 }
 
-export interface WalletTransaction {
-  id: string;
-
-  walletId: string;
-
-  amount: number;
-
-  type: TransactionType;
-
-  reason?: string | null;
-
-  createdAt: Date;
+export function fail(
+  message = "Bad Request",
+  status = 400,
+  data: unknown = null
+) {
+  return NextResponse.json(
+    {
+      success: false,
+      message,
+      data,
+    },
+    {
+      status,
+    }
+  );
 }
 
-export interface WalletBalance {
-  userId: string;
+export function serverError(error: unknown) {
+  console.error(error);
 
-  balance: number;
-}
-
-export interface CreditRequest {
-  userId: string;
-
-  amount: number;
-
-  reason?: string;
-}
-
-export interface DebitRequest {
-  userId: string;
-
-  amount: number;
-
-  reason?: string;
+  return NextResponse.json(
+    {
+      success: false,
+      message: "Internal Server Error",
+      data: null,
+    },
+    {
+      status: 500,
+    }
+  );
 }
